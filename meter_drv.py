@@ -244,7 +244,7 @@ class Meters:
         if self.ser_lock:
             while 1:
                 if self.ser_lock:
-                    logger.info("Request Jamd")
+                    #logger.info("Request Jamd")
                     time.sleep(init.SER_LOCK_RECHECK_TIME)
                 else:
                     break
@@ -260,9 +260,9 @@ class Meters:
         if rsp:
             s = self.get_power_string(self.chn.rx_payload)
 
-            self.caches_val[SerialNumber] = float(s) * 1000
+            self.caches_val[SerialNumber] = int(s*1000)
             self.caches_time[SerialNumber] = time.time()
-            return float(s) * 1000
+            return int(s*1000)
         else:
             logger.error("COM %s, Addr %s no resp!" % (self.COM_PORT, SerialNumber))
             return None
@@ -272,6 +272,7 @@ class Meters:
         l = list(s)
         l.insert(-4, '.')
         s = ''.join(l)
+        s = float(s)
         return s
 
     def ser2addr(self, SerialNumber):
