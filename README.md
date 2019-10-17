@@ -1,4 +1,5 @@
 # miner-power-consumption-detectior
+```
 #
 #
 #      +------------------+
