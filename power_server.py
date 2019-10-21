@@ -57,13 +57,14 @@ class api_v1_power(tornado.web.RequestHandler):
                         "ipaddr": ipaddr,
                         "elapsed": elapsed,
                     })
+                logger.debug("Request %s , cost %sms." % (ipaddr, round(elapsed*1000, 3)))
             except Exception as excepts:
                 traceback.print_exc()
                 e = excepts
                 pass
         if e:
             elapsed = round(time.time() - start_point, 3)
-            logger.error("Meters read error:%s" % traceback.format_exc())
+            logger.exception("Meters read error:%s" % traceback.format_exc())
             self.write({'time': time.time(),
                             "version": "0.0",
                             "power": -1,
