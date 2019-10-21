@@ -1,6 +1,8 @@
 import globals
 import logging
 from loggings import ColoredLogger
+from os.path import exists
+from os import remove
 
 logging.setLoggerClass(ColoredLogger)
 logger = logging.getLogger(__name__)
@@ -25,3 +27,15 @@ with open('config.csv', 'r') as f:
         globals.METERS_IP_MAP[ip] = [meter_id, ser_port]
 del first_line
 
+def set_meter_done_flag(flag):
+    if flag:
+        with open('meter_done.flg', 'wb') as f:
+            f.write(b"")
+    else:
+        remove("./meter_done.flg")
+    return True
+
+def read_meter_done_flag():
+    if exists("./meter_done.flg"):
+        return True
+    return False
