@@ -31,7 +31,7 @@ class api_v1_power(tornado.web.RequestHandler):
     @gen.coroutine
     def get(self):
         start_point = time.time()
-        if self.request.arguments.has_key("ip"):
+        if "ip" in self.request.arguments:
             ipaddr = self.get_argument("ip")
         else:
             ipaddr = self.request.remote_ip
