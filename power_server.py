@@ -53,15 +53,25 @@ class api_v1_power(tornado.web.RequestHandler):
             try:
                 power = yield self.read_power_by_IP(ipaddr)
                 elapsed = round(time.time() - start_point, 3)
-                self.write({
-                    'time': time.time(),
-                    "version": "0.0",
-                    "power": power,
-                    "error": False,
-                    "msg": "success",
-                    "ipaddr": ipaddr,
-                    "elapsed": elapsed,
-                })
+                if power is None:
+                    self.write({'time': time.time(),
+                                "version": "0.0",
+                                "power": -1,
+                                "error": True,
+                                "msg": "broken data",
+                                "ipaddr": ipaddr,
+                                "elapsed": elapsed,
+                                })
+                else:
+                    self.write({
+                        'time': time.time(),
+                        "version": "0.0",
+                        "power": power,
+                        "error": False,
+                        "msg": "success",
+                        "ipaddr": ipaddr,
+                        "elapsed": elapsed,
+                    })
                 logger.debug("Request %s , cost %sms." % (ipaddr, round(elapsed * 1000, 3)))
             except Exception as excepts:
                 traceback.print_exc()
