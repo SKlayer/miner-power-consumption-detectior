@@ -45,18 +45,29 @@ def self_check_n_init_ports():
         for i in globals.COM_SHARD:
             result = globals.COM_SHARD[i].change_ser_baud()
             if not result:
-                logger.fatal("Serial %s-baud rate change fail! exit.!" % (i))
+                if read_ignore_self_check():
+                    logger.fatal("Serial %s-baud rate change fail! IGNORE.!" % (i))
+                else:
+                    logger.fatal("Serial %s-baud rate change fail! exit.!" % (i))
+                    exit("SELF_CHECK_FAIL")
                 exit("SELF_CHECK_FAIL")
         for i in globals.COM_SHARD:
             if not globals.COM_SHARD[i].chn.isOpen():
-                logger.error("COM open fail after change baud! %s" % globals.COM_SHARD[i].COM_PORT)
-                exit("COM_INIT_FAIL")
+
+                if read_ignore_self_check():
+                    logger.error("COM open fail after change baud! %s Ignore" % globals.COM_SHARD[i].COM_PORT)
+                else:
+                    logger.error("COM open fail after change baud! %s EXIT" % globals.COM_SHARD[i].COM_PORT)
+                    exit("SELF_CHECK_FAIL")
     else:
         for i in globals.COM_SHARD:
             result = globals.COM_SHARD[i].change_ser_baud()
             if not result:
-                logger.fatal("Serial %s-baud rate change fail! exit.!" % (i))
-                exit("SELF_CHECK_FAIL")
+                if read_ignore_self_check():
+                    logger.fatal("Serial %s-baud rate change fail! IGNORE.!" % (i))
+                else:
+                    logger.fatal("Serial %s-baud rate change fail! exit.!" % (i))
+                    exit("SELF_CHECK_FAIL")
     for i in globals.METERS_IP_MAP:
         sn, dev = tuple(globals.METERS_IP_MAP[i])
         meter = globals.COM_SHARD[dev]
@@ -82,8 +93,11 @@ def self_check_n_init_ports():
         if not power is None:
             logger.info("Serial %s-%s-Check OK, Power %sW     TIME %sms" % (dev, sn, power, elapsed*1000))
         else:
-            logger.fatal("Serial %s-%s-Check FAIL exit.!" % (dev, sn))
-            exit("SELF_CHECK_FAIL")
+            if read_ignore_self_check():
+                logger.fatal("Serial %s-%s-Check FAIL Ignore.!" % (dev, sn))
+            else:
+                logger.fatal("Serial %s-%s-Check FAIL exit.!" % (dev, sn))
+                exit("SELF_CHECK_FAIL")
 
 
     logger.critical("All device check OK!!")
