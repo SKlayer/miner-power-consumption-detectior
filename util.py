@@ -39,3 +39,7 @@ def read_meter_done_flag():
     if exists("./meter_done.flg"):
         return True
     return False
+def read_ignore_self_check():
+    if exists("./ignore_self_check"):
+        return True
+    return False

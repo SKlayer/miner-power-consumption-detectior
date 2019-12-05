@@ -64,8 +64,12 @@ def self_check_n_init_ports():
         if not power is None:
             logger.info("Serial %s-%s-Check OK, Power %sW" % (dev, sn, power))
         else:
-            logger.fatal("Serial %s-%s-Check FAIL exit.!" % (dev, sn))
-            exit("SELF_CHECK_FAIL")
+
+            if read_ignore_self_check():
+                logger.fatal("Serial %s-%s-Check FAIL Ignore.!" % (dev, sn))
+            else:
+                logger.fatal("Serial %s-%s-Check FAIL exit.!" % (dev, sn))
+                exit("SELF_CHECK_FAIL")
     set_meter_done_flag(True)
     import time
     for i in globals.METERS_IP_MAP:
