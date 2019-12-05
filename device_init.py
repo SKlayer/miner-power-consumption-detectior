@@ -50,7 +50,6 @@ def self_check_n_init_ports():
                 else:
                     logger.fatal("Serial %s-baud rate change fail! exit.!" % (i))
                     exit("SELF_CHECK_FAIL")
-                exit("SELF_CHECK_FAIL")
         for i in globals.COM_SHARD:
             if not globals.COM_SHARD[i].chn.isOpen():
 
