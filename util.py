@@ -22,7 +22,7 @@ with open('config.csv', 'r') as f:
             else:
                 logger.fatal("Config.csv Read ERROR")
                 exit("CFG_ERROR")
-        ip, meter_id, ser_port = tuple(i.replace("\"", "").split(","))
+        ip, meter_id, ser_port = tuple(i.replace("\"", "").split(",")[:3])
 
         globals.METERS_IP_MAP[ip] = [meter_id, ser_port]
 del first_line

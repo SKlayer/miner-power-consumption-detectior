@@ -239,19 +239,17 @@ class Meters:
             self.caches_time[SerialNumber] = 0
             self.caches_val[SerialNumber] = 0
         if not time.time() - self.caches_time[SerialNumber]  > init.SERIAL_CACHE_TTL:
-            #logger.info("CACHE HINT!!")
             return self.caches_val[SerialNumber]
+        addr = self.ser2addr(SerialNumber)
+
+
         if self.ser_lock:
             while 1:
                 if self.ser_lock:
-                    #logger.info("Request Jamd")
                     time.sleep(init.SER_LOCK_RECHECK_TIME)
                 else:
+                    self.ser_lock = True
                     break
-
-        addr = self.ser2addr(SerialNumber)
-
-        self.ser_lock = True
         self.chn.encode(addr, 0x11, [0x0, 0x0, 0x3, 0x2])
         rsp = self.chn.xchg_data(self.verbose)
         self.ser_lock = False
