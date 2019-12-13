@@ -135,12 +135,13 @@ class api_v1_power_cached(tornado.web.RequestHandler):
         else:
             try:
                 if ipaddr in power_cache:
-                    if time.time() < power_cache[ipaddr][1]:
+                    if time.time() < power_cache[ipaddr][1] + cache_ttl:
                         power = power_cache[ipaddr][0]
                     else:
                         power = yield self.read_power_by_IP(ipaddr)
                 else:
                     power = yield self.read_power_by_IP(ipaddr)
+
                 elapsed = round(time.time() - start_point, 3)
                 if power is None:
                     self.write({'time': time.time(),

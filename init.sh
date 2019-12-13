@@ -12,5 +12,5 @@ sudo docker run -it \
         --restart always \
         --privileged \
         -v $basepath:/mnt/power \
-        --name power power:0.1 /bin/bash \
+        --name power binbinxm:0.1 /bin/bash \
         -c "cd /mnt/power;/opt/conda/bin/python3 init.py"
