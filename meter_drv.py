@@ -127,10 +127,10 @@ class Channel:
 
     def _open(self):
         try:
-            try:
-                self.ser.rs485_mode = serial.rs485.RS485Settings()
-            except:
-                logger.warn("Fail to set RS485 mode on %s" % self.ser.port)
+            #try:
+            #    self.ser.rs485_mode = serial.rs485.RS485Settings()
+            #except:
+            #    logger.warn("Fail to set RS485 mode on %s" % self.ser.port)
             self.ser.open()
             return True
         except serial.SerialException:
