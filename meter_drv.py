@@ -181,43 +181,47 @@ class Channel:
         return frame, rsp
 
     def read_temp(self, addr):
-        tx_frame = [addr, 0x03, 0x00, 0x00, 0x00, 0x02]
-        c16 = _crc16(tx_frame)
-        h = c16 >> 8
-        l = c16 & 0xff
-        tx_frame += [l, h]
+        try:
+            tx_frame = [addr, 0x03, 0x00, 0x00, 0x00, 0x02]
+            c16 = _crc16(tx_frame)
+            h = c16 >> 8
+            l = c16 & 0xff
+            tx_frame += [l, h]
 
-        self.ser.write(tx_frame)
-        rsp = b""
-        n = 0
-        while 1:
-            if n > self.timeout:
-                logger.warn("Temp meter No resp,port %s ID%s" % (self.ser.port, addr))
-                break
+            self.ser.write(tx_frame)
+            rsp = b""
+            n = 0
+            while 1:
+                if n > self.timeout:
+                    logger.warn("Temp meter No resp,port %s ID%s" % (self.ser.port, addr))
+                    break
 
-            rsp += self.ser.read(11)
-            if len(rsp) >= 9:
-                break
-            else:
-                time.sleep(1 / 1000)
-                n += 1
-        if len(rsp) < 9:
-            return None, None
-        rsp_c16 = _crc16(rsp[:7])
-        h = rsp_c16 >> 8
-        l = rsp_c16 & 0xff
+                rsp += self.ser.read(11)
+                if len(rsp) >= 9:
+                    break
+                else:
+                    time.sleep(1 / 1000)
+                    n += 1
+            if len(rsp) < 9:
+                return None, None
+            rsp_c16 = _crc16(rsp[:7])
+            h = rsp_c16 >> 8
+            l = rsp_c16 & 0xff
 
-        if not (rsp[7] == l and rsp[8] == h):
-            logger.warn("CRC16 check fail, not %s should be %s" % (rsp[7:], [l, h]))
+            if not (rsp[7] == l and rsp[8] == h):
+                logger.warn("CRC16 check fail, not %s should be %s" % (rsp[7:], [l, h]))
 
-        temp = rsp[5] * 256 + rsp[6]
-        if temp >= 32768:
-            temp -= 65536
-        humi = rsp[3] * 256 + rsp[4]
+            temp = rsp[5] * 256 + rsp[6]
+            if temp >= 32768:
+                temp -= 65536
+            humi = rsp[3] * 256 + rsp[4]
 
-        temp = round(temp / 10, 2)
-        humi = round(humi / 10, 2)
-        return temp, humi
+            temp = round(temp / 10, 2)
+            humi = round(humi / 10, 2)
+            return temp, humi
+        except:
+            traceback.print_exc()
+            return None,None
 
     def isOpen(self):
         return self.ser.isOpen()

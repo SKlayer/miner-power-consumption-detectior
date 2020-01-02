@@ -54,6 +54,18 @@ def init_devices():
                 logger.fatal("Serial %s-%s-Check FAIL exit.!" % (dev, sn))
                 exit("SELF_CHECK_FAIL")
 
+    for i in globals.TEMP_MAP:
+        addr, dev = tuple(globals.TEMP_MAP[i])
+        com = globals.COM_SHARD[dev]
+        temp, humi = com.read_env(addr)
+        if not temp == humi is None:
+            logger.info("Temper \"%s\" %s-%s-Check OK, Temp %sC, RH%s" % (i, dev, addr, temp,humi))
+        else:
+            if read_ignore_self_check():
+                logger.info("Temper \"%s\" %s-%s-Check Fail Ignore" % (i, dev, addr))
+            else:
+                logger.info("Temper \"%s\" %s-%s-Check Fail ,exit" % (i, dev, addr))
+                exit("SELF_CHECK_FAIL")
 
 
 

@@ -1,2 +1,4 @@
 METERS_IP_MAP = {}
+TEMP_MAP = {}
+
 COM_SHARD = {}
