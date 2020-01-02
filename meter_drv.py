@@ -243,13 +243,13 @@ class Channel:
 
     def read_frame(self, frame):
         timeout_count = 0
-        time.sleep(0.08)
+        time.sleep(init.DELAY_FOR_READ)
         state = 'ST_FSTART'
         state_count = 0
         while 1:
             if self.in_waiting() == 0:
                 timeout_count += 1
-                time.sleep(0.001)
+                time.sleep(0.005)
                 if timeout_count > self.timeout:
                     return frame, False
             else:
