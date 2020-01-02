@@ -121,12 +121,16 @@ class Channel:
         self.ser.baudrate = 0
         self.ser.parity = serial.PARITY_EVEN
         self.ser.timeout = 0
-        self.ser.rs485_mode = serial.rs485.RS485Settings()
+
         self.timeout = 200
         # real time out = self.timeout*2
 
     def _open(self):
         try:
+            try:
+                self.ser.rs485_mode = serial.rs485.RS485Settings()
+            except:
+                logger.warn("Fail to set RS485 mode on %s" % self.ser.port)
             self.ser.open()
             return True
         except serial.SerialException:
